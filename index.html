@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Discord Cookie Scraper</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #1a1a1a, #2b2b2b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    .container {
+      background: #3a3a3a;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #555;
+      color: white;
+      font-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #888;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      color: white;
+      cursor: pointer;
+    }
+
+    .progress-section {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .progress-bar {
+      height: 20px;
+      width: 100%;
+      background: #444;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff55, #00cc44);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .result-box {
+      background: white;
+      color: black;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: none;
+      text-align: center;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .checkmark {
+      font-size: 60px;
+      color: green;
+      animation: popIn 0.6s ease;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .next-process {
+      margin-top: 20px;
+      font-size: 1em;
+    }
+
+    .action-buttons button {
+      width: 100%;
+      margin-top: 10px;
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="inputForm">
+    <h2>Discord Cookie Scraper</h2>
+    <input type="text" id="channelId" placeholder="Channel ID" />
+    <input type="text" id="userToken" placeholder="User Token" />
+    <button onclick="startScraping()">Submit</button>
+  </div>
+
+  <div class="progress-section" id="progressSection" style="display:none;">
+    <h3>Memproses Data...</h3>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <p id="progressText">0% selesai</p>
+    <p>⏱️ Waktu: <span id="timeElapsed">0s</span></p>
+    <p>🍪 Cookie ditemukan: <span id="cookieCount">0</span></p>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="checkmark">✔️</div>
+    <h2>Proses Berhasil</h2>
+    <p>Silahkan klik download jika kamu ingin download file ini.</p>
+    <p>Klik kembali jika ingin kembali ke menu awal.</p>
+    <p>Klik lanjut jika ingin lanjut ke proses checker.</p>
+    <div class="action-buttons">
+      <button onclick="location.reload()">Kembali</button>
+      <button onclick="alert('Download dimulai...')">Download</button>
+      <button onclick="startNextProcess()">Lanjut</button>
+    </div>
+  </div>
+
+  <script>
+    let percent = 0;
+    let cookies = 0;
+    let seconds = 0;
+    let timer;
+
+    function startScraping() {
+      document.getElementById("inputForm").style.display = "none";
+      document.getElementById("progressSection").style.display = "block";
+
+      timer = setInterval(() => {
+        seconds++;
+        percent += 5;
+        cookies += Math.floor(Math.random() * 5) + 1;
+
+        document.getElementById("timeElapsed").innerText = seconds + "s";
+        document.getElementById("progressFill").style.width = percent + "%";
+        document.getElementById("progressText").innerText = percent + "% selesai";
+        document.getElementById("cookieCount").innerText = cookies;
+
+        if (percent >= 100) {
+          clearInterval(timer);
+          setTimeout(() => {
+            document.getElementById("progressSection").style.display = "none";
+            document.getElementById("resultBox").style.display = "block";
+          }, 1000);
+        }
+      }, 600);
+    }
+
+    function startNextProcess() {
+      document.getElementById("resultBox").innerHTML = `
+        <h2>🔍 Mengecek Cookie...</h2>
+        <div class="progress-bar"><div class="progress-fill" style="width: 0%;" id="nextFill"></div></div>
+        <p id="nextText">0%</p>
+      `;
+      let nextPercent = 0;
+      let checker = setInterval(() => {
+        nextPercent += 10;
+        document.getElementById("nextFill").style.width = nextPercent + "%";
+        document.getElementById("nextText").innerText = nextPercent + "%";
+        if (nextPercent >= 100) clearInterval(checker);
+      }, 400);
+    }
+  </script>
+
+</body>
+</html>
